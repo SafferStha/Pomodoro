@@ -7,22 +7,40 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
   <link rel="stylesheet" href="style.css" />
   <script src="script.js" defer></script>
+  <style>
+    input[type="number"] {
+      appearance: textfield;
+      background: #717171;
+      color: #fff;
+      size: 20px;
+      border: 1px solid #444;
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-size: 1rem;
+      width: 50px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Pomodoro Timer</h1>
+    <h1>Pomodoro Timer 🍅</h1>
 
     <button id="edit-time-btn" onclick="toggleEditTime()">Edit Time</button>
 
-    <div class="set-time" id="set-time-panel">  
-      <label>Working Time: <input type="number" id="work-min" value="25" min="1"></label>
+    <div class="set-time" id="set-time-panel">
+      <label>
+        Working Time:
+        <input type="number" id="work-hour" value="0" min="0" style="width:40px;">hour,
+        <input type="number" id="work-min" value="25" min="0" max="59" style="width:40px;">min
+      </label>
 
       <div class="breaks-header">Breaks:</div>
 
-      <label class="breaks-label">Short Break: <input type="number" id="short-min" value="5" min="1"></label>
-      <label class="breaks-label">Long Break: <input type="number" id="long-min" value="10" min="1"></label>
+      <label class="breaks-label">Short Breaks: <input type="number" id="short-min" value="5" min="1">min</label>
+      <label class="breaks-label">Long Breaks: <input type="number" id="long-min" value="10" min="1">min</label>
 
-      <button onclick="setCustomTimes()">Set Time</button>
+      <button onclick="setCustomTimes()">Set Time!</button>
     </div>
 
     <div class="timer">
@@ -34,9 +52,32 @@
     </div>
 
     <div class="buttons">
-      <button class="start" onclick="startTimer()">Start</button>
-      <button class="pause" onclick="pauseTimer()">Pause</button>
-      <button class="reset" onclick="resetTimer()">Reset</button>
+      <button class="start" onclick="startTimer()">Start ▶️</button>
+      <button class="pause" onclick="pauseTimer()">Pause ⏸️</button>
+      <button class="reset" onclick="resetTimer()">Reset 🔄</button>
+    </div>
+  </div>
+
+  <div id="edit-time-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+      <h2>Edit Timer Durations</h2>
+      <label>
+        Working Time:
+        <input type="number" id="modal-work-hour" value="0" min="0" style="width:40px;"> h
+        <input type="number" id="modal-work-min" value="25" min="0" max="59" style="width:40px;"> m
+      </label>
+      <label>
+        Short Break:
+        <input type="number" id="modal-short-min" value="5" min="1" style="width:40px;"> min
+      </label>
+      <label>
+        Long Break:
+        <input type="number" id="modal-long-min" value="10" min="1" style="width:40px;"> min
+      </label>
+      <div style="margin-top:20px;">
+        <button id="modal-set-btn" style="margin-left:10px;background:#2962ff;">Set Time!</button>
+        <button id="modal-cancel-btn" style="margin-left:10px;background:#cc2435;">Cancel</button>
+      </div>
     </div>
   </div>
 </body>
