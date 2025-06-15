@@ -9,7 +9,7 @@ let session = "Work";
 
 const timerElement = document.getElementById("timer");
 const progressCircle = document.querySelector(".progress");
-const radius = 90;
+const radius = progressCircle.r.baseVal.value;
 const circumference = 2 * Math.PI * radius;
 
 const setTimePanel = document.getElementById("set-time-panel");
@@ -18,9 +18,20 @@ const editTimeBtn = document.getElementById("edit-time-btn");
 progressCircle.style.strokeDasharray = circumference;
 
 function updateDisplay() {
-  const minutes = Math.floor(current / 60);
-  const seconds = current % 60;
-  timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  let totalSeconds = current;
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  // Show hours only if at least 1 hour is set
+  let timeString = "";
+  if (hours > 0) {
+    timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  } else {
+    timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+  timerElement.textContent = timeString;
+
   const offset = circumference - (current / getSessionDuration()) * circumference;
   progressCircle.style.strokeDashoffset = offset;
 
@@ -29,15 +40,13 @@ function updateDisplay() {
   let r, g, b;
   if (percent > 0.5) {
     // Green to Yellow
-    // Green: (0,255,99), Yellow: (255,255,0)
-    const t = (1 - percent) * 2; // 0 at 100%, 1 at 50%
+    const t = (1 - percent) * 2;
     r = Math.round(0 + (255 - 0) * t);
     g = 255;
     b = Math.round(99 - 99 * t);
   } else {
     // Yellow to Red
-    // Yellow: (255,255,0), Red: (255,0,0)
-    const t = 1 - percent * 2; // 0 at 50%, 1 at 0%
+    const t = 1 - percent * 2;
     r = 255;
     g = Math.round(255 - 255 * t);
     b = 0;
@@ -89,53 +98,45 @@ function resetTimer() {
 }
 
 function toggleEditTime() {
-  if (setTimePanel.style.display === "none" || setTimePanel.style.display === "") {
-    setTimePanel.style.display = "flex";
-    editTimeBtn.textContent = "Close";
-    pauseTimer(); // pause timer when editing
-  } else {
-    setTimePanel.style.display = "none";
-    editTimeBtn.textContent = "Edit Time";
-  }
+  // Fill modal with current values
+  document.getElementById('modal-work-hour').value = Math.floor(workDuration / 3600);
+  document.getElementById('modal-work-min').value = Math.floor((workDuration % 3600) / 60);
+  document.getElementById('modal-short-min').value = Math.floor(shortBreak / 60);
+  document.getElementById('modal-long-min').value = Math.floor(longBreak / 60);
+  document.getElementById('edit-time-modal').style.display = 'flex';
 }
 
-function setCustomTimes() {
-  const workInput = document.getElementById("work-min");
-  const shortInput = document.getElementById("short-min");
-  const longInput = document.getElementById("long-min");
-
-  const workVal = parseInt(workInput.value);
-  const shortVal = parseInt(shortInput.value);
-  const longVal = parseInt(longInput.value);
-
-  if (isNaN(workVal) || workVal < 1) {
-    alert("Work time must be a positive number.");
-    workInput.focus();
+// Modal Set/Cancel handlers
+document.getElementById('modal-set-btn').onclick = function() {
+  const workHour = parseInt(document.getElementById('modal-work-hour').value) || 0;
+  const workMin = parseInt(document.getElementById('modal-work-min').value) || 0;
+  const shortMin = parseInt(document.getElementById('modal-short-min').value) || 1;
+  const longMin = parseInt(document.getElementById('modal-long-min').value) || 1;
+  if (workHour < 0 || workMin < 0 || workMin > 59 || (workHour === 0 && workMin === 0)) {
+    alert('Invalid work time.');
     return;
   }
-  if (isNaN(shortVal) || shortVal < 1) {
-    alert("Short break time must be a positive number.");
-    shortInput.focus();
+  if (shortMin < 1 || shortMin > 59) {
+    alert('Invalid short break.');
     return;
   }
-  if (isNaN(longVal) || longVal < 1) {
-    alert("Long break time must be a positive number.");
-    longInput.focus();
+  if (longMin < 1 || longMin > 59) {
+    alert('Invalid long break.');
     return;
   }
-
-  workDuration = workVal * 60;
-  shortBreak = shortVal * 60;
-  longBreak = longVal * 60;
-
+  workDuration = (workHour * 60 + workMin) * 60;
+  shortBreak = shortMin * 60;
+  longBreak = longMin * 60;
   if (session === "Work") current = workDuration;
   else if (session === "Short Break") current = shortBreak;
   else current = longBreak;
-
   updateDisplay();
+  document.getElementById('edit-time-modal').style.display = 'none';
+};
+document.getElementById('modal-cancel-btn').onclick = function() {
+  document.getElementById('edit-time-modal').style.display = 'none';
+};
 
-  setTimePanel.style.display = "none";
-  editTimeBtn.textContent = "Edit Time";
-}
-
-updateDisplay();
+document.addEventListener("DOMContentLoaded", function() {
+  updateDisplay();
+});
