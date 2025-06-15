@@ -59,7 +59,7 @@ svg circle {
 .buttons, .set-time {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
@@ -72,9 +72,9 @@ button {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-.start { background-color: #28a745; color: white; }
-.pause { background-color: #d79e0d; color: white; }
-.reset { background-color: #cc2435; color: white; }
+.start { background-color: #28a745; color: whitesmoke; }
+.pause { background-color: #d79e0d; color: whitesmoke; }
+.reset { background-color: #cc2435; color: whitesmoke; }
 #edit-time-btn {
   justify-content: center;
   background-color: #2962ff;
@@ -137,10 +137,14 @@ button {
   margin: 18px 0 5px 0;
 }
 .modal-content input {
-  background-color: whitesmoke;
+  background-color: #cdcdcd;
+  font-size: medium;
   text-align: center;
   border-radius: 5px;
   margin-right: 5px;
+  width: 60px;
+  height: 30px;
+  padding: 0;
 }
 .progress {
   stroke-width: 10;
@@ -213,7 +217,7 @@ button {
     color: whitesmoke;
   }
   .modal-content input {
-    background-color: #1d1a1a;
+    background-color: #777777;
     color: whitesmoke;
   }
 }
